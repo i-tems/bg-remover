@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="kr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Background Removal</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        margin: 50px;
+      }
+      .container {
+        margin: 20px auto;
+        width: 300px;
+      }
+      .btn {
+        padding: 10px 20px;
+        font-size: 16px;
+        margin: 10px;
+        cursor: pointer;
+        border: none;
+        background-color: #007bff;
+        color: white;
+        border-radius: 5px;
+      }
+      .btn:hover {
+        background-color: #0056b3;
+      }
+      .file-list {
+        margin-top: 20px;
+      }
+      .file-item {
+        margin: 10px 0;
+      }
+      .download-link {
+        margin-top: 20px;
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>이미지 배경 제거 서비스</h1>
+    <div class="container">
+      <!-- 이미지 업로드 버튼 -->
+      <input type="file" id="fileInput" />
+      <button class="btn" onclick="uploadFile()">업로드</button>
+      <button class="btn" onclick="resetServer()">새로 고침</button>
+    </div>
+
+    <!-- 업로드된 파일 목록 -->
+    <div id="fileList" class="file-list"></div>
+
+    <!-- 다운로드 링크 -->
+    <div id="downloadLink"></div>
+
+    <script>
+      const API_URL = "http://0.0.0.0:8888";
+
+      function resetUI() {
+        document.getElementById("fileInput").value = ""; // 파일 입력 필드 초기화
+        document.getElementById("fileList").innerHTML = ""; // 업로드된 파일 목록 초기화
+        document.getElementById("downloadLink").innerHTML = ""; // 다운로드 링크 초기화
+        alert("UI가 초기화되었습니다.");
+      }
+
+      // 서버 초기화
+      async function resetServer() {
+        const response = await fetch(`${API_URL}/reset/`, {
+          method: "POST",
+        });
+
+        const result = await response.json();
+        alert(result.message);
+
+        // UI 초기화
+        resetUI();
+      }
+
+      // 파일 업로드
+      async function uploadFile() {
+        const fileInput = document.getElementById("fileInput");
+        const file = fileInput.files[0];
+
+        if (!file) {
+          alert("업로드할 파일을 선택해주세요.");
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const response = await fetch(`${API_URL}/upload/`, {
+          method: "POST",
+          body: formData,
+        });
+
+        const result = await response.json();
+        alert(result.message);
+        updateFileList();
+      }
+
+      // 업로드된 파일 목록 조회
+      async function updateFileList() {
+        const response = await fetch(`${API_URL}/files/`);
+        const result = await response.json();
+
+        const fileList = document.getElementById("fileList");
+        fileList.innerHTML = "";
+
+        result.files.forEach((file) => {
+          const fileItem = document.createElement("div");
+          fileItem.className = "file-item";
+          fileItem.innerHTML = `
+                    ${file}
+                    <button class="btn" onclick="removeBackground('${file}')">배경 제거</button>
+                `;
+          fileList.appendChild(fileItem);
+        });
+      }
+
+      // 배경 제거
+      async function removeBackground(filename) {
+        const formData = new FormData();
+        formData.append("filename", filename);
+
+        const response = await fetch(`${API_URL}/remove-bg/`, {
+          method: "POST",
+          body: formData,
+        });
+
+        const result = await response.json();
+
+        if (result.error) {
+          alert(result.error);
+          return;
+        }
+
+        const downloadLink = document.getElementById("downloadLink");
+        downloadLink.innerHTML = `
+                <a href="${API_URL}/download/${result.output_file}" class="download-link btn" download>
+                    다운로드 :: ${result.output_file}
+                </a>
+            `;
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,30 @@
+# Python 관련 디렉토리 및 파일 무시
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+
+
+# Jupyter Notebook 관련 디렉토리 무시
+.ipynb_checkpoints
+
+# 가상 환경 관련 디렉토리 무시
+env/
+venv/
+ENV/
+.venv
+.env
+
+# macOS 관련 파일 무시
+.DS_Store
+
+# Windows 관련 파일 무시
+Thumbs.db
+Desktop.ini
+
+# Visual Studio Code 관련 파일 무시
+.vscode/
+
+# PyCharm 관련 파일 무시
+.idea/
