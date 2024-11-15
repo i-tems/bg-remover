@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="kr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Background Removal</title>
+    <style></style>
+  </head>
+  <body>
+    <h1>이미지 배경 제거 서비스</h1>
+    <div class="container">
+      <!-- input 태그에 업로드가 되어서 상태가 변하면 uploadImage 함수를 실행 -->
+      <input
+        type="file"
+        id="fileInput"
+        accept=".jpeg, .jpg, .png"
+        onchange="uploadImage(event)"
+      />
+    </div>
+    <div><img id="resultImage" style="max-width: 300px" alt="" /></div>
+    <div>
+      <a
+        id="downloadButton"
+        href="#"
+        download="processed_image.png"
+        style="display: none"
+        >다운로드</a
+      >
+    </div>
+    <script>
+      const API_URL = "http://0.0.0.0:8888";
+      const LOADING_URL = "./../ui/loading.gif";
+
+      // 파일 업로드
+      async function uploadImage() {
+        // input 태그의 id
+        const fileInput = document.getElementById("fileInput");
+        const resultImage = document.getElementById("resultImage");
+        const downloadButton = document.getElementById("downloadButton");
+
+        const file = fileInput.files[0];
+        console.log(file);
+
+        // 로딩 상태 설정
+        resultImage.src = LOADING_URL; // 기존 이미지를 초기화
+        resultImage.alt = "로딩중입니다. . .";
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+          const response = await fetch(`${API_URL}/uploadimage/`, {
+            method: "POST",
+            body: formData,
+          });
+
+          if (!response.ok) {
+            throw new Error("이미지 처리 실패");
+          }
+
+          // Blob 데이터를 받아 Blob URL 생성
+          const blob = await response.blob();
+          const blobUrl = URL.createObjectURL(blob);
+
+          // 처리된 이미지 미리보기
+          resultImage.src = blobUrl;
+          resultImage.alt = "처리된 이미지";
+
+          // 다운로드 버튼 설정
+          downloadButton.href = blobUrl; // Blob URL 설정
+          downloadButton.download = "processed_image.png"; // 다운로드 파일명 설정
+          downloadButton.style.display = "inline"; // 버튼 표시
+        } catch (error) {
+          console.error("에러 발생 : ", error);
+        }
+      }
+    </script>
+  </body>
+</html>
