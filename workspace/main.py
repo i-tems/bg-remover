@@ -16,25 +16,31 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["Processed-Filename"],  # 클라이언트에서 읽을 수 있는 헤더
 )
-
-TMP_DIR = "tmp"
-os.makedirs(TMP_DIR, exist_ok=True)  # tmp 디렉토리 생성 (존재하지 않으면 생성)
 
 @app.post("/uploadimage/")
 async def upload_remove_bg(file: UploadFile):
-    # 1. 업로드된 파일을 읽음 (file은 실제 바이너리 데이터가 아닌 웹에서 업로드된 파일의 추상화된 메타 데이터이므로 실제 데이터는 .read()가 필요)
+    # 1. 파일 이름 설정
+    original_filename = file.filename
+    name_to_ext = os.path.splitext(original_filename)  # 확장자와 파일 이름 분리
+    processed_filename = f"{name_to_ext[0]}_remove.png"
+
+
+    # 2. 업로드된 파일을 읽음 (file은 실제 바이너리 데이터가 아닌 웹에서 업로드된 파일의 추상화된 메타 데이터이므로 실제 데이터는 .read()가 필요)
     file_data = await file.read()
     
-    # 2. PIL로 이미지 로드 (image를 다루기 위해 변환)
+    # 3. PIL로 이미지 로드 (image를 다루기 위해 변환)
     input_image = Image.open(BytesIO(file_data))
     
-    # 3. 배경 제거 (rembg 사용)
+    # 4. 배경 제거 (rembg 사용)
     processed_image = remove(input_image)
 
-    # 4. 처리된 이미지를 메모리에 저장
+    # 5. 처리된 이미지를 메모리에 저장
     output_buffer = BytesIO()
     processed_image.save(output_buffer, format="PNG")
     output_buffer.seek(0)  # 스트림 포인터를 시작으로 이동
 
-    return StreamingResponse(output_buffer, media_type="image/png")
+    # 6. 처리된 이미지를 클라이언트에 스트리밍 응답
+    headers = {"Processed-Filename": processed_filename}  # 파일 이름을 헤더로 전달 ####################
+    return StreamingResponse(output_buffer, media_type="image/png", headers=headers)

@@ -59,8 +59,12 @@
           }
 
           // Blob 데이터를 받아 Blob URL 생성
-          const blob = await response.blob();
+          const blob = await response.blob(); //////////////////////////////////////////////////
           const blobUrl = URL.createObjectURL(blob);
+
+          // 서버에서 전달된 파일 이름 읽기
+          const processedFilename = response.headers.get("Processed-Filename");
+          console.log(processedFilename);
 
           // 처리된 이미지 미리보기
           resultImage.src = blobUrl;
@@ -68,7 +72,7 @@
 
           // 다운로드 버튼 설정
           downloadButton.href = blobUrl; // Blob URL 설정
-          downloadButton.download = "processed_image.png"; // 다운로드 파일명 설정
+          downloadButton.download = processedFilename; // 다운로드 파일명 설정
           downloadButton.style.display = "inline"; // 버튼 표시
         } catch (error) {
           console.error("에러 발생 : ", error);
