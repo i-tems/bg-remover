@@ -24,6 +24,6 @@ RUN python3 --version
 WORKDIR /workspace
 COPY . /workspace
 
-EXPOSE 8888
+EXPOSE 443
 
 # CMD ["tail", "-f", "/dev/null"]

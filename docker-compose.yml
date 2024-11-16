@@ -6,10 +6,10 @@ services:
       context: .
       # dockerfile: .devcontainer/Dockerfile
     ports:
-      - "8888:8888"
+      - "443:443"
     volumes:
       - ./workspace:/root/workspace
     working_dir: /root/workspace
     # command: ["tail", "-f", "/dev/null"]
     command:
-      ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8888", "--reload"]
+      ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "443", "--reload"]
