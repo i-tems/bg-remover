@@ -4,3 +4,4 @@ pydantic
 Pillow
 rembg
 python-multipart
+jinja2

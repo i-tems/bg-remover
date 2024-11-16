@@ -1,4 +1,4 @@
-from fastapi import FastAPI, File, UploadFile, Form
+from fastapi import FastAPI, File, UploadFile, Form, Request
 from fastapi.responses import StreamingResponse, JSONResponse
 from rembg import remove
 from PIL import Image
@@ -6,6 +6,9 @@ import os
 from io import BytesIO
 from fastapi.middleware.cors import CORSMiddleware
 from uuid import uuid4
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 
 app = FastAPI()
 
@@ -18,6 +21,15 @@ app.add_middleware(
     allow_headers=["*"],
     expose_headers=["Processed-Filename"],  # 클라이언트에서 읽을 수 있는 헤더
 )
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+templates = Jinja2Templates(directory="templates")
+
+@app.get("/", response_class=HTMLResponse)
+async def read_root(request: Request):
+    return templates.TemplateResponse(request=request, name="page.html")
+
 
 @app.post("/uploadimage/")
 async def upload_remove_bg(file: UploadFile):
