@@ -1,5 +1,5 @@
 from fastapi import FastAPI, File, UploadFile, Form, Request
-from fastapi.responses import StreamingResponse, JSONResponse
+from fastapi.responses import StreamingResponse, JSONResponse, PlainTextResponse
 from rembg import remove
 from PIL import Image
 import os
@@ -30,6 +30,17 @@ templates = Jinja2Templates(directory="templates")
 async def read_root(request: Request):
     return templates.TemplateResponse(request=request, name="page.html")
 
+@app.get("/sitemap.xml", response_class=PlainTextResponse)
+async def sitemap(request: Request):
+    return """<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url>
+    <loc>https://bgremove.item-inventory.com/</loc>
+    <lastmod>2024-11-01</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+</url>
+</urlset>""".strip()
 
 @app.post("/uploadimage/")
 async def upload_remove_bg(file: UploadFile):

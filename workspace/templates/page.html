@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html lang="kr">
   <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3SPXHPTBQR"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-3SPXHPTBQR');
+    </script>
+    <meta name="google-site-verification" content="tBtUeQ6itC7F3V4aAxrpdmnkta9SoJHszLXbXBGP9sQ" />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Background Removal</title>
@@ -13,7 +23,7 @@
       <input
         type="file"
         id="fileInput"
-        accept=".jpeg, .jpg, .png"
+        accept=".jpeg, .jpg, .png, .webp"
         onchange="uploadImage(event)"
       />
     </div>
@@ -28,7 +38,7 @@
       >
     </div>
     <script>
-      const API_URL = "http://0.0.0.0:443";
+      const API_URL = "https://item-inventory.com";
       const LOADING_URL = "./static/loading.gif";
 
       // 파일 업로드
