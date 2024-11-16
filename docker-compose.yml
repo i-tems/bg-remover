@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   prod:
@@ -10,4 +10,6 @@ services:
     volumes:
       - ./workspace:/root/workspace
     working_dir: /root/workspace
-    command: ["tail", "-f", "/dev/null"]
+    # command: ["tail", "-f", "/dev/null"]
+    command:
+      ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8888", "--reload"]
