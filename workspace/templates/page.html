@@ -2,15 +2,23 @@
 <html lang="kr">
   <head>
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-3SPXHPTBQR"></script>
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-3SPXHPTBQR"
+    ></script>
     <script>
       window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
 
-      gtag('config', 'G-3SPXHPTBQR');
+      gtag("config", "G-3SPXHPTBQR");
     </script>
-    <meta name="google-site-verification" content="tBtUeQ6itC7F3V4aAxrpdmnkta9SoJHszLXbXBGP9sQ" />
+    <meta
+      name="google-site-verification"
+      content="tBtUeQ6itC7F3V4aAxrpdmnkta9SoJHszLXbXBGP9sQ"
+    />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Background Removal</title>
@@ -69,12 +77,20 @@
           }
 
           // Blob 데이터를 받아 Blob URL 생성
-          const blob = await response.blob(); //////////////////////////////////////////////////
+          const blob = await response.blob();
           const blobUrl = URL.createObjectURL(blob);
 
           // 서버에서 전달된 파일 이름 읽기
-          const processedFilename = response.headers.get("Processed-Filename");
-          console.log(processedFilename);
+          // const processedFilename = response.headers.get("Processed-Filename");
+          // console.log(processedFilename);
+
+          // 클라이언트에서 파일 이름 변경 (원본 파일 이름에서 "_remove" 추가)
+          const originalFilename = file.name; // 업로드된 파일 이름
+          const nameWithoutExt = originalFilename.substring(
+            0,
+            originalFilename.lastIndexOf(".")
+          );
+          const newFilename = `${nameWithoutExt}_remove.png`; // "_remove" 추가
 
           // 처리된 이미지 미리보기
           resultImage.src = blobUrl;
@@ -82,7 +98,8 @@
 
           // 다운로드 버튼 설정
           downloadButton.href = blobUrl; // Blob URL 설정
-          downloadButton.download = processedFilename; // 다운로드 파일명 설정
+          // downloadButton.download = processedFilename; // 다운로드 파일명 설정
+          downloadButton.download = newFilename; // 다운로드 파일명 설정
           downloadButton.style.display = "inline"; // 버튼 표시
         } catch (error) {
           console.error("에러 발생 : ", error);

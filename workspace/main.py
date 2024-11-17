@@ -44,10 +44,10 @@ async def sitemap(request: Request):
 
 @app.post("/uploadimage/")
 async def upload_remove_bg(file: UploadFile):
-    # 1. 파일 이름 설정
-    original_filename = file.filename
-    name_to_ext = os.path.splitext(original_filename)  # 확장자와 파일 이름 분리
-    processed_filename = f"{name_to_ext[0]}_remove.png"
+    # # 1. 파일 이름 설정
+    # original_filename = file.filename
+    # name_to_ext = os.path.splitext(original_filename)  # 확장자와 파일 이름 분리
+    # processed_filename = f"{name_to_ext[0]}_remove.png"
 
 
     # 2. 업로드된 파일을 읽음 (file은 실제 바이너리 데이터가 아닌 웹에서 업로드된 파일의 추상화된 메타 데이터이므로 실제 데이터는 .read()가 필요)
@@ -64,6 +64,8 @@ async def upload_remove_bg(file: UploadFile):
     processed_image.save(output_buffer, format="PNG")
     output_buffer.seek(0)  # 스트림 포인터를 시작으로 이동
 
-    # 6. 처리된 이미지를 클라이언트에 스트리밍 응답
-    headers = {"Processed-Filename": processed_filename}  # 파일 이름을 헤더로 전달 ####################
-    return StreamingResponse(output_buffer, media_type="image/png", headers=headers)
+    # # 6. 처리된 이미지를 클라이언트에 스트리밍 응답
+    # headers = {"Processed-Filename": processed_filename}  # 파일 이름을 헤더로 전달 ####################
+    # return StreamingResponse(output_buffer, media_type="image/png", headers=headers)
+
+    return StreamingResponse(output_buffer, media_type="image/png")
