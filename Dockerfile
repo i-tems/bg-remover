@@ -18,8 +18,9 @@ RUN python3 -m pip install -r requirements.txt
 RUN mkdir -p /root/.u2net && \
     curl -L -o /root/.u2net/u2net.onnx https://github.com/danielgatis/rembg/releases/download/v0.0.0/u2net.onnx
 
-RUN python3 --version
+RUN python3 -m pip install onnxruntime
 
+RUN python3 --version
 # Set the working directory
 WORKDIR /workspace
 COPY . /workspace
